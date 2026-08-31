@@ -13,7 +13,6 @@ import {
   MapPin,
   Pause,
   Play,
-  Quote,
   RotateCcw,
   Search,
   Shield,
@@ -23,41 +22,37 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const DURATION = 148;
+const DURATION = 108;
 const BEATS = [
   { start: 0, end: 9, scene: 'hook-reach', label: 'The reach' },
   { start: 9, end: 17, scene: 'hook-gap', label: 'The gap' },
   { start: 17, end: 24, scene: 'intro', label: 'The View' },
-  { start: 24, end: 34, scene: 'product-select', label: 'Select verses' },
-  { start: 34, end: 44, scene: 'product-pipeline', label: 'Build the story' },
-  { start: 44, end: 54, scene: 'product-output', label: 'Watch the View' },
-  { start: 54, end: 62, scene: 'film-title', label: 'The story' },
-  { start: 62, end: 71, scene: 'film-threat', label: 'The challenge' },
-  { start: 71, end: 81, scene: 'film-david', label: 'The shepherd' },
-  { start: 81, end: 91, scene: 'film-faith', label: 'Faith' },
-  { start: 91, end: 101, scene: 'film-context', label: 'More than film' },
-  { start: 101, end: 110, scene: 'explore-intro', label: 'Tap the world' },
-  { start: 110, end: 120, scene: 'explore-tabernacle', label: 'Tabernacle' },
-  { start: 120, end: 130, scene: 'explore-material', label: 'Every detail' },
-  { start: 130, end: 139, scene: 'evidence', label: 'Trust the lens' },
-  { start: 139, end: 148, scene: 'outro', label: 'The View' },
+  { start: 24, end: 31, scene: 'product-select', label: 'Select verses' },
+  { start: 31, end: 41, scene: 'product-pipeline', label: 'Build the story' },
+  { start: 41, end: 51, scene: 'product-output', label: 'Watch the View' },
+  { start: 51, end: 61, scene: 'film-context', label: 'Go deeper' },
+  { start: 61, end: 70, scene: 'explore-intro', label: 'Tap the world' },
+  { start: 70, end: 80, scene: 'explore-tabernacle', label: 'Noah’s Ark' },
+  { start: 80, end: 90, scene: 'explore-material', label: 'Tap a word' },
+  { start: 90, end: 99, scene: 'evidence', label: 'Trust the lens' },
+  { start: 99, end: 108, scene: 'outro', label: 'The View' },
 ] as const;
 
 const entities = {
-  tabernacle: {
-    type: 'PLACE · SACRED SPACE', title: 'The Tabernacle', hebrew: 'מִשְׁכָּן · mishkan · “dwelling place”',
-    body: 'A portable sanctuary at the center of Israel’s wilderness worship. Exodus describes an outer courtyard, the Holy Place, and the Most Holy Place.',
-    detail: 'Used for sacrifice, priestly service, worship, and as the meeting place between God and his people.', source: 'Primary text · Exodus 25–40',
+  ark: {
+    type: 'OBJECT · RESCUE', title: 'Noah’s Ark',
+    body: 'A huge wooden vessel God told Noah to build before the flood.',
+    detail: 'It carried Noah’s family and the animals safely through the water.', source: 'Primary text · Genesis 6–9',
   },
-  acacia: {
-    type: 'MATERIAL · CONSTRUCTION', title: 'Acacia Wood', hebrew: 'עֲצֵי שִׁטִּים · atzei shittim',
-    body: 'A durable desert hardwood named throughout the tabernacle instructions. It formed structural frames and sacred furnishings.',
-    detail: 'Its availability in arid regions made it a plausible, resilient material for a portable sanctuary.', source: 'Primary text · Exodus 25:5, 10–15',
+  wood: {
+    type: 'MATERIAL · BUILDING', title: 'Ark wood',
+    body: 'Genesis says the ark was made from wood. Large beams and wooden pegs could hold the vessel together.',
+    detail: 'The exact kind of wood is uncertain, so the image shows one reasonable idea.', source: 'Primary text · Genesis 6:14',
   },
-  altar: {
-    type: 'OBJECT · WORSHIP', title: 'Bronze Altar', hebrew: 'מִזְבֵּחַ · mizbeach · “place of sacrifice”',
-    body: 'A large, portable altar positioned in the courtyard. Its acacia-wood frame was overlaid with bronze and fitted with carrying poles.',
-    detail: 'It was the principal place for burnt offerings and stood before entry into the sanctuary tent.', source: 'Primary text · Exodus 27:1–8',
+  pitch: {
+    type: 'MATERIAL · WATERPROOFING', title: 'Pitch',
+    body: 'Pitch was a thick, sticky seal spread over the wood.',
+    detail: 'It filled the gaps between boards and helped keep water out.', source: 'Primary text · Genesis 6:14',
   },
 };
 
@@ -104,10 +99,10 @@ function HookScene({ mode, onStart }: { mode: 'reach' | 'gap'; onStart: () => vo
   );
 }
 
-function ProductDemoScene({ mode }: { mode: 'select' | 'pipeline' | 'output' }) {
+function ProductDemoScene({ mode, onAdvance }: { mode: 'select' | 'pipeline' | 'output'; onAdvance: () => void }) {
   const copy = {
     select: ['01 · CHOOSE THE MOMENT', 'Start with the Word.', 'Select the passage you want to see.'],
-    pipeline: ['02 · THE VIEW ENGINE', 'Scripture in.', 'A historically grounded story takes shape.'],
+    pipeline: ['02 · THE VIEW ENGINE', 'Watch the passage come to life', 'through an animated short film.'],
     output: ['03 · YOUR VIEW IS READY', 'From passage', 'to cinematic experience.'],
   }[mode];
 
@@ -128,8 +123,8 @@ function ProductDemoScene({ mode }: { mode: 'select' | 'pipeline' | 'output' }) 
           <article className="select-reader"><div className="select-reader-head"><span>1 SAMUEL</span><strong>17</strong><button><Search /> Find</button></div><h3>David and Goliath</h3>
             <p><sup>38</sup> Then Saul dressed David in his own tunic. He put a coat of armor on him and a bronze helmet on his head.</p>
             <div className="verse-selection"><span className="selection-handle top" /><p><sup>40</sup> Then he took his staff in his hand, chose five smooth stones from the stream, put them in the pouch of his shepherd’s bag and, with his sling in his hand, approached the Philistine.</p><p><sup>45</sup> David said to the Philistine, “You come against me with sword and spear and javelin, but I come against you in the name of the LORD Almighty...”</p><span className="selection-handle bottom" /></div>
-            <div className="selection-toolbar"><span><strong>Verses 40–45</strong> · 6 verses selected</span><button><WandSparkles /> Create a View</button></div>
-          </article><div className="demo-cursor"><span /></div>
+            <div className="selection-toolbar"><span><strong>Verses 40–45</strong> · 6 verses selected</span><button onClick={onAdvance}><WandSparkles /> Create a View</button></div>
+          </article><div className="demo-cursor"><span /></div><div className="demo-click-ring" />
         </div>}
 
         {mode === 'pipeline' && <div className="pipeline-product-state">
@@ -144,7 +139,7 @@ function ProductDemoScene({ mode }: { mode: 'select' | 'pipeline' | 'output' }) 
         </div>}
 
         {mode === 'output' && <div className="output-product-state">
-          <div className="output-film"><div className="output-film-image" /><div className="output-film-shade" /><span className="ready-badge"><Check /> VIEW READY · 1:24</span><div className="output-title"><small>1 SAMUEL 17</small><strong>DAVID &amp; GOLIATH</strong><span>Artistic reconstruction based on biblical and historical context</span></div><button className="output-play"><Play fill="currentColor" /></button><div className="output-caption">“...with his sling in his hand, he approached the Philistine.”</div><div className="output-controls"><button><Pause fill="currentColor" /></button><span className="output-progress"><i /></span><small>0:18 / 1:24</small></div></div>
+          <div className="output-film battle-film"><div className="battle-shot battle-aim" /><div className="battle-shot battle-release"><span className="flying-stone" /></div><div className="battle-shot battle-fall"><span className="falling-goliath" /></div><div className="battle-dust" /><div className="output-film-shade" /><span className="ready-badge"><span className="live-dot" /> PLAYING · 1 SAMUEL 17</span><div className="battle-caption"><span>DAVID RELEASES THE STONE</span><span>THE GIANT FALLS</span><span>THE VALLEY ERUPTS</span></div><div className="output-controls"><button><Pause fill="currentColor" /></button><span className="output-progress"><i /></span><small>0:18 / 1:24</small></div></div>
           <div className="output-actions"><button><BookOpen /> Read the passage</button><button><Eye /> Explore David</button><button><MapPin /> Valley of Elah</button></div>
         </div>}
       </div>
@@ -152,29 +147,19 @@ function ProductDemoScene({ mode }: { mode: 'select' | 'pipeline' | 'output' }) 
   );
 }
 
-function FilmScene({ mode }: { mode: 'film-title' | 'film-threat' | 'film-david' | 'film-faith' | 'film-context' }) {
-  const captions = {
-    'film-title': ['03 · THE STORY, ALIVE', 'DAVID & GOLIATH', 'The valley holds its breath.'],
-    'film-threat': ['DAY 40 · VALLEY OF ELAH', 'FORTY DAYS.', 'The challenge went unanswered.'],
-    'film-david': ['1 SAMUEL 17:40', 'FIVE STONES.', 'One sling. One shepherd.'],
-    'film-faith': ['1 SAMUEL 17:45', '“I COME IN THE NAME OF THE LORD.”', 'Faith steps into the valley.'],
-    'film-context': ['THE STORY CONTINUES', 'WATCH. THEN GO DEEPER.', 'Every frame leads back to Scripture.'],
-  }[mode];
+function FilmScene() {
+  const captions = ['THE STORY CONTINUES', 'WATCH. THEN GO DEEPER.', 'Every frame leads back to Scripture.'];
   return (
-    <section className={`film-scene scene ${mode}`}>
+    <section className="film-scene scene film-context">
       <div className="film-image" /><div className="film-shade" /><div className="film-flare" />
       <div className="film-meta"><span>THE VIEW ORIGINAL</span><span>ARTISTIC RECONSTRUCTION · 1 SAMUEL 17</span></div>
       <div className="film-title">
         <p className="section-kicker">{captions[0]}</p><h2>{captions[1]}</h2><p>{captions[2]}</p>
       </div>
-      {mode === 'film-threat' && <div className="threat-meter"><span /><small>ISRAELITE LINE</small><strong>40</strong><small>DAYS OF DEFIANCE</small></div>}
-      {mode === 'film-david' && <div className="story-hotspots"><span style={{ left: '25%', top: '62%' }}><i /> Sling · woven leather</span><span style={{ left: '46%', top: '78%' }}><i /> Five smooth stones</span><span style={{ left: '75%', top: '45%' }}><i /> Philistine armor</span></div>}
-      {mode === 'film-faith' && <div className="verse-wave"><Quote /><span /><span /><span /><span /><span /></div>}
-      {mode === 'film-context' && <>
+      <>
         <aside className="accuracy-card"><div><Shield size={14} /> ACCURACY LENS</div><strong>Philistine scale armor</strong><p>Period-informed reconstruction from the biblical description and regional material culture.</p><span>Interpretive details are clearly labeled</span></aside>
         <div className="after-film"><button>Explore David <ChevronRight /></button><button>Valley of Elah <ChevronRight /></button><button>The sling <ChevronRight /></button></div>
-      </>}
-      {mode !== 'film-title' && mode !== 'film-context' && <div className="film-caption"><span className="caption-line" /><p>{captions[2]}</p></div>}
+      </>
     </section>
   );
 }
@@ -183,7 +168,7 @@ function KnowledgeCard({ entity }: { entity: EntityKey }) {
   const item = entities[entity];
   return (
     <aside className="knowledge-card" key={entity}>
-      <div className="knowledge-top"><span>{item.type}</span><Layers3 size={16} /></div><h3>{item.title}</h3><p className="hebrew">{item.hebrew}</p>
+      <div className="knowledge-top"><span>{item.type}</span><Layers3 size={16} /></div><h3>{item.title}</h3>
       <div className="knowledge-divider" /><p>{item.body}</p><h4>What was it used for?</h4><p>{item.detail}</p>
       <div className="source-row"><Shield size={14} /><span><strong>Grounded view</strong>{item.source}</span></div><button className="deep-dive">Explore full entry <ChevronRight /></button>
     </aside>
@@ -192,17 +177,20 @@ function KnowledgeCard({ entity }: { entity: EntityKey }) {
 
 function ExploreScene({ mode, entity, onEntity }: { mode: 'explore-intro' | 'explore-tabernacle' | 'explore-material'; entity: EntityKey; onEntity: (key: EntityKey) => void }) {
   const intro = mode === 'explore-intro';
+  const noah = mode === 'explore-tabernacle';
   return (
     <section className={`explore-scene scene ${mode}`}>
       <div className="explore-image" /><div className="explore-shade" />
       <div className="explore-copy">
         <p className="section-kicker">04 · TAP INTO THE WORLD</p>
-        <h2>{intro ? <>Every noun becomes<br /><em>a doorway.</em></> : mode === 'explore-tabernacle' ? <>See the place.<br /><em>Understand its purpose.</em></> : <>From material<br /><em>to meaning.</em></>}</h2>
-        <div className="passage-card"><div><BookOpen size={15} /> EXODUS 26:15</div><p>“Make upright frames of <button onClick={() => onEntity('acacia')}>acacia wood</button> for the <button onClick={() => onEntity('tabernacle')}>tabernacle</button>.”</p><span>Tap a highlighted word to open its knowledge layer.</span></div>
-        <div className="entity-tabs">{(Object.keys(entities) as EntityKey[]).map((key) => <button key={key} className={entity === key ? 'active' : ''} onClick={() => onEntity(key)}>{key === 'acacia' ? 'Acacia wood' : key === 'altar' ? 'Bronze altar' : 'Tabernacle'}</button>)}</div>
-        {intro && <div className="noun-cloud"><span>DAVID</span><span>JERUSALEM</span><span>SLING</span><span>PAUL</span><span>TABERNACLE</span><span>VALLEY OF ELAH</span></div>}
+        <h2>{intro ? <>Every noun becomes<br /><em>a doorway.</em></> : noah ? <>The flood ends.<br /><em>The ark rests.</em></> : <>Tap a word.<br /><em>See what it means.</em></>}</h2>
+        {intro && <div className="passage-card"><div><BookOpen size={15} /> GENESIS 6:14</div><p>“Make yourself an <button onClick={() => onEntity('ark')}>ark</button> of wood.”</p><span>Tap a highlighted word to learn more.</span></div>}
+        {noah && <div className="passage-card"><div><BookOpen size={15} /> GENESIS 8:4</div><p>“The ark came to rest on the mountains of Ararat.”</p><span>The View shows the moment, then explains what the Bible says.</span></div>}
+        {mode === 'explore-material' && <div className="passage-card word-demo-passage"><div><BookOpen size={15} /> GENESIS 6:14</div><p>“Make yourself an ark of wood. Cover it inside and out with <button onClick={() => onEntity('pitch')}>pitch</button>.”</p><span>Tap the gold word.</span><div className="word-demo-cursor"><span /></div><div className="word-demo-click" /></div>}
+        {intro && <div className="noun-cloud"><span>DAVID</span><span>JERUSALEM</span><span>SLING</span><span>PAUL</span><span>THE ARK</span><span>VALLEY OF ELAH</span></div>}
       </div>
-      {!intro && <KnowledgeCard entity={entity} />}
+      {noah && <KnowledgeCard entity={entity} />}
+      {mode === 'explore-material' && <aside className="simple-word-popover"><div className="simple-word-images"><img src="/noahs-ark-mountain.png" alt="AI view of Noah's Ark on a mountain" /><img src="/ark-timber-detail.png" alt="AI close view of timber and pitch on the ark" /></div><span>MATERIAL</span><h3>Pitch</h3><p>A thick, sticky seal. It filled the gaps in the wood and helped keep water out.</p><small>AI VIEW · BASED ON GENESIS 6:14</small></aside>}
       {intro && <div className="tap-orbit"><Eye /><span>PERSON</span><span>PLACE</span><span>OBJECT</span><span>EVENT</span></div>}
     </section>
   );
@@ -224,7 +212,7 @@ export default function Home() {
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
-  const [entity, setEntity] = useState<EntityKey>('tabernacle');
+  const [entity, setEntity] = useState<EntityKey>('ark');
 
   useEffect(() => {
     if (!playing) return;
@@ -241,15 +229,21 @@ export default function Home() {
 
   useEffect(() => {
     if (act !== 'explore-tabernacle' && act !== 'explore-material') return;
-    const id = window.setTimeout(() => setEntity(act === 'explore-tabernacle' ? 'tabernacle' : 'acacia'), 0);
+    const id = window.setTimeout(() => setEntity(act === 'explore-tabernacle' ? 'ark' : 'pitch'), 0);
     return () => window.clearTimeout(id);
   }, [act]);
+
+  useEffect(() => {
+    if (act !== 'product-select' || !playing) return;
+    const id = window.setTimeout(() => jump(31.1), 4800);
+    return () => window.clearTimeout(id);
+  }, [act, playing]);
 
   const jump = (time: number) => { setStarted(true); setElapsed(time); setPlaying(true); };
   const restart = () => { setStarted(false); setPlaying(false); setElapsed(0); };
   const hookMode = act === 'hook-reach' ? 'reach' : act === 'hook-gap' ? 'gap' : null;
   const productMode = act === 'product-select' ? 'select' : act === 'product-pipeline' ? 'pipeline' : act === 'product-output' ? 'output' : null;
-  const filmMode = act.startsWith('film-') ? act as Parameters<typeof FilmScene>[0]['mode'] : null;
+  const filmMode = act === 'film-context';
   const exploreMode = act.startsWith('explore-') ? act as Parameters<typeof ExploreScene>[0]['mode'] : null;
 
   return (
@@ -258,17 +252,17 @@ export default function Home() {
 
       {hookMode && <HookScene key={beatIndex} mode={hookMode} onStart={() => { setStarted(true); setPlaying(true); }} />}
 
-      {act === 'intro' && <section key={beatIndex} className="intro-scene scene"><div className="intro-image" /><div className="intro-vignette" /><header className="intro-nav"><button className="wordmark" onClick={restart}><ViewMark /><span>THE VIEW</span></button><span className="demo-label">INTERACTIVE PRODUCT FILM · 02:28</span></header><div className="intro-content"><p className="eyebrow"><span /> SCRIPTURE, SEEN ANEW <span /></p><div className="hero-mark"><ViewMark hero /></div><h1>THE VIEW</h1><p className="tagline">Don’t just read the story. <em>Enter it.</em></p><Button className="enter-button" onClick={() => { setStarted(true); setPlaying(true); }}><span><Play size={15} fill="currentColor" /></span>{started ? 'Continue the experience' : 'Begin the experience'}</Button></div><div className="intro-footer"><span>Historically grounded</span><span className="footer-rule" /><span>AI animated</span><span className="footer-rule" /><span>Every passage, alive</span></div></section>}
+      {act === 'intro' && <section key={beatIndex} className="intro-scene scene"><div className="intro-image" /><div className="intro-vignette" /><header className="intro-nav"><button className="wordmark" onClick={restart}><ViewMark /><span>THE VIEW</span></button><span className="demo-label">INTERACTIVE PRODUCT FILM · 01:48</span></header><div className="intro-content"><p className="eyebrow"><span /> SCRIPTURE, SEEN ANEW <span /></p><div className="hero-mark"><ViewMark hero /></div><h1>THE VIEW</h1><p className="tagline">Don’t just read the story. <em>Enter it.</em></p></div><div className="intro-footer"><span>Historically grounded</span><span className="footer-rule" /><span>AI animated</span><span className="footer-rule" /><span>Every passage, alive</span></div></section>}
 
-      {productMode && <ProductDemoScene key={beatIndex} mode={productMode} />}
-      {filmMode && <FilmScene key={beatIndex} mode={filmMode} />}
+      {productMode && <ProductDemoScene key={beatIndex} mode={productMode} onAdvance={() => jump(31.1)} />}
+      {filmMode && <FilmScene key={beatIndex} />}
       {exploreMode && <ExploreScene key={beatIndex} mode={exploreMode} entity={entity} onEntity={setEntity} />}
       {act === 'evidence' && <EvidenceScene key={beatIndex} />}
       {act === 'outro' && <section key={beatIndex} className="outro-scene scene"><div className="outro-glow" /><ViewMark hero /><p className="section-kicker">THE VIEW</p><h2>Read it.<br /><em>See it.</em><br />Understand it.</h2><p>Any passage. Every detail. Scripture brought to life.</p><Button className="enter-button" onClick={restart}><RotateCcw /><span className="no-circle">Watch again</span></Button></section>}
 
       {act !== 'intro' && act !== 'outro' && !act.startsWith('hook-') && <header className="app-header"><button className="wordmark compact" onClick={restart}><ViewMark /><span>THE VIEW</span></button><div className="act-indicator"><span className="live-dot" /> {beat.label.toUpperCase()}</div><div className="beat-count"><span>{String(beatIndex + 1).padStart(2, '0')}</span> / {BEATS.length}</div><Button variant="ghost" size="sm" className="sound-button"><Volume2 /> Sound on</Button></header>}
 
-      {started && act !== 'outro' && <footer className="playback-bar"><Button variant="ghost" size="icon" aria-label={playing ? 'Pause demo' : 'Play demo'} onClick={() => setPlaying(!playing)}>{playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}</Button><button className="timecode" onClick={() => jump(0)}>{formatTime(elapsed)} <span>/ 2:28</span></button><nav className="timeline" aria-label="Demo beats">{BEATS.map((item, index) => { const fill = Math.max(0, Math.min(1, (elapsed - item.start) / (item.end - item.start))); return <button key={item.label + index} style={{ width: `${((item.end - item.start) / DURATION) * 100}%` }} className={`timeline-segment ${index === beatIndex ? 'current' : ''}`} onClick={() => jump(item.start + .1)} aria-label={`Jump to ${item.label}`}><span style={{ transform: `scaleX(${fill})` }} /><small>{item.label}</small></button>; })}</nav><div className="runtime"><Clock3 /> NEXT · {Math.max(0, Math.ceil(beat.end - elapsed))}s</div></footer>}
+      {started && act !== 'outro' && <footer className="playback-bar"><Button variant="ghost" size="icon" aria-label={playing ? 'Pause demo' : 'Play demo'} onClick={() => setPlaying(!playing)}>{playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}</Button><button className="timecode" onClick={() => jump(0)}>{formatTime(elapsed)} <span>/ 1:48</span></button><nav className="timeline" aria-label="Demo beats">{BEATS.map((item, index) => { const fill = Math.max(0, Math.min(1, (elapsed - item.start) / (item.end - item.start))); return <button key={item.label + index} style={{ width: `${((item.end - item.start) / DURATION) * 100}%` }} className={`timeline-segment ${index === beatIndex ? 'current' : ''}`} onClick={() => jump(item.start + .1)} aria-label={`Jump to ${item.label}`}><span style={{ transform: `scaleX(${fill})` }} /><small>{item.label}</small></button>; })}</nav><div className="runtime"><Clock3 /> NEXT · {Math.max(0, Math.ceil(beat.end - elapsed))}s</div></footer>}
     </main>
   );
 }
