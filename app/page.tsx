@@ -23,20 +23,20 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const DURATION = 108;
+const DURATION = 120;
 const BEATS = [
-  { start: 0, end: 9, scene: 'hook-reach', label: 'The reach' },
-  { start: 9, end: 17, scene: 'hook-gap', label: 'The gap' },
-  { start: 17, end: 24, scene: 'intro', label: 'The View' },
-  { start: 24, end: 31, scene: 'product-select', label: 'Select verses' },
-  { start: 31, end: 41, scene: 'product-pipeline', label: 'Build the story' },
-  { start: 41, end: 51, scene: 'product-output', label: 'Watch the View' },
-  { start: 51, end: 61, scene: 'film-context', label: 'Go deeper' },
-  { start: 61, end: 70, scene: 'explore-intro', label: 'Tap the world' },
-  { start: 70, end: 80, scene: 'explore-tabernacle', label: 'Noah’s Ark' },
-  { start: 80, end: 90, scene: 'explore-material', label: 'Tap a word' },
-  { start: 90, end: 99, scene: 'evidence', label: 'Trust the lens' },
-  { start: 99, end: 108, scene: 'outro', label: 'The View' },
+  { start: 0, end: 15, scene: 'hook-reach', label: 'The reach' },
+  { start: 15, end: 29, scene: 'hook-gap', label: 'The gap' },
+  { start: 29, end: 36, scene: 'intro', label: 'The View' },
+  { start: 36, end: 43, scene: 'product-select', label: 'Select verses' },
+  { start: 43, end: 53, scene: 'product-pipeline', label: 'Build the story' },
+  { start: 53, end: 63, scene: 'product-output', label: 'Watch the View' },
+  { start: 63, end: 73, scene: 'film-context', label: 'Go deeper' },
+  { start: 73, end: 82, scene: 'explore-intro', label: 'Tap the world' },
+  { start: 82, end: 92, scene: 'explore-tabernacle', label: 'Noah’s Ark' },
+  { start: 92, end: 102, scene: 'explore-material', label: 'Tap a word' },
+  { start: 102, end: 111, scene: 'evidence', label: 'Trust the lens' },
+  { start: 111, end: 120, scene: 'outro', label: 'The View' },
 ] as const;
 
 const entities = {
@@ -124,8 +124,8 @@ function ProductDemoScene({ mode, onAdvance }: { mode: 'select' | 'pipeline' | '
           <article className="select-reader"><div className="select-reader-head"><span>1 SAMUEL</span><strong>17</strong><button><Search /> Find</button></div><h3>David and Goliath</h3>
             <p><sup>38</sup> Then Saul dressed David in his own tunic. He put a coat of armor on him and a bronze helmet on his head.</p>
             <div className="verse-selection"><span className="selection-handle top" /><p><sup>40</sup> Then he took his staff in his hand, chose five smooth stones from the stream, put them in the pouch of his shepherd’s bag and, with his sling in his hand, approached the Philistine.</p><p><sup>45</sup> David said to the Philistine, “You come against me with sword and spear and javelin, but I come against you in the name of the LORD Almighty...”</p><span className="selection-handle bottom" /></div>
-            <div className="selection-toolbar"><span><strong>Verses 40–45</strong> · 6 verses selected</span><button onClick={onAdvance}><WandSparkles /> Create a View</button></div>
-          </article><div className="demo-cursor"><span /></div><div className="demo-click-ring" />
+            <div className="selection-toolbar"><span><strong>Verses 40–45</strong> · 6 verses selected</span><button onClick={onAdvance}><WandSparkles /> Create a View<span className="demo-cursor" aria-hidden="true"><i /></span><span className="demo-click-ring" aria-hidden="true" /></button></div>
+          </article>
         </div>}
 
         {mode === 'pipeline' && <div className="pipeline-product-state">
@@ -187,7 +187,7 @@ function ExploreScene({ mode, entity, onEntity }: { mode: 'explore-intro' | 'exp
         <h2>{intro ? <>Every noun becomes<br /><em>a doorway.</em></> : noah ? <>The flood ends.<br /><em>The ark rests.</em></> : <>Tap a word.<br /><em>See what it means.</em></>}</h2>
         {intro && <div className="passage-card"><div><BookOpen size={15} /> GENESIS 6:14</div><p>“Make yourself an <button onClick={() => onEntity('ark')}>ark</button> of wood.”</p><span>Tap a highlighted word to learn more.</span></div>}
         {noah && <div className="passage-card"><div><BookOpen size={15} /> GENESIS 8:4</div><p>“The ark came to rest on the mountains of Ararat.”</p><span>The View shows the moment, then explains what the Bible says.</span></div>}
-        {mode === 'explore-material' && <div className="passage-card word-demo-passage"><div><BookOpen size={15} /> GENESIS 6:14</div><p>“Make yourself an ark of wood. Cover it inside and out with <button onClick={() => onEntity('pitch')}>pitch</button>.”</p><span>Tap the gold word.</span><div className="word-demo-cursor"><span /></div><div className="word-demo-click" /></div>}
+        {mode === 'explore-material' && <div className="passage-card word-demo-passage"><div><BookOpen size={15} /> GENESIS 6:14</div><p>“Make yourself an ark of wood. Cover it inside and out with <button className="pitch-word-button" onClick={() => onEntity('pitch')}>pitch<span className="word-demo-cursor" aria-hidden="true"><i /></span><span className="word-demo-click" aria-hidden="true" /></button>.”</p><span>Tap the gold word.</span></div>}
         {intro && <div className="noun-cloud"><span>DAVID</span><span>JERUSALEM</span><span>SLING</span><span>PAUL</span><span>THE ARK</span><span>VALLEY OF ELAH</span></div>}
       </div>
       {noah && <KnowledgeCard entity={entity} />}
@@ -238,7 +238,7 @@ export default function Home() {
 
   useEffect(() => {
     if (act !== 'product-select' || !playing) return;
-    const id = window.setTimeout(() => jump(31.1), 4800);
+    const id = window.setTimeout(() => jump(43.1), 4800);
     return () => window.clearTimeout(id);
   }, [act, playing]);
 
@@ -253,9 +253,9 @@ export default function Home() {
 
       {hookMode && <HookScene key={beatIndex} mode={hookMode} onStart={() => { setStarted(true); setPlaying(true); }} />}
 
-      {act === 'intro' && <section key={beatIndex} className="intro-scene scene"><div className="intro-image" /><div className="intro-vignette" /><header className="intro-nav"><button className="wordmark" onClick={restart}><ViewMark /><span>THE VIEW</span></button><span className="demo-label">INTERACTIVE PRODUCT FILM · 01:48</span></header><div className="intro-content"><p className="eyebrow"><span /> SCRIPTURE, SEEN ANEW <span /></p><div className="hero-mark"><ViewMark hero /></div><h1>THE VIEW</h1><p className="tagline">Don’t just read the story. <em>Enter it.</em></p></div><div className="intro-footer"><span>Historically grounded</span><span className="footer-rule" /><span>AI animated</span><span className="footer-rule" /><span>Every passage, alive</span></div></section>}
+      {act === 'intro' && <section key={beatIndex} className="intro-scene scene"><div className="intro-image" /><div className="intro-vignette" /><header className="intro-nav"><button className="wordmark" onClick={restart}><ViewMark /><span>THE VIEW</span></button><span className="demo-label">INTERACTIVE PRODUCT FILM · 02:00</span></header><div className="intro-content"><p className="eyebrow"><span /> SCRIPTURE, SEEN ANEW <span /></p><div className="hero-mark"><ViewMark hero /></div><h1>THE VIEW</h1><p className="tagline">Don’t just read the story. <em>Enter it.</em></p></div><div className="intro-footer"><span>Historically grounded</span><span className="footer-rule" /><span>AI animated</span><span className="footer-rule" /><span>Every passage, alive</span></div></section>}
 
-      {productMode && <ProductDemoScene key={beatIndex} mode={productMode} onAdvance={() => jump(31.1)} />}
+      {productMode && <ProductDemoScene key={beatIndex} mode={productMode} onAdvance={() => jump(43.1)} />}
       {filmMode && <FilmScene key={beatIndex} />}
       {exploreMode && <ExploreScene key={beatIndex} mode={exploreMode} entity={entity} onEntity={setEntity} />}
       {act === 'evidence' && <EvidenceScene key={beatIndex} />}
@@ -263,7 +263,7 @@ export default function Home() {
 
       {act !== 'intro' && act !== 'outro' && !act.startsWith('hook-') && <header className="app-header"><button className="wordmark compact" onClick={restart}><ViewMark /><span>THE VIEW</span></button><div className="act-indicator"><span className="live-dot" /> {beat.label.toUpperCase()}</div><div className="beat-count"><span>{String(beatIndex + 1).padStart(2, '0')}</span> / {BEATS.length}</div><Button variant="ghost" size="sm" className="sound-button"><Volume2 /> Sound on</Button></header>}
 
-      {started && act !== 'outro' && <footer className="playback-bar"><Button variant="ghost" size="icon" aria-label={playing ? 'Pause demo' : 'Play demo'} onClick={() => setPlaying(!playing)}>{playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}</Button><button className="timecode" onClick={() => jump(0)}>{formatTime(elapsed)} <span>/ 1:48</span></button><nav className="timeline" aria-label="Demo beats">{BEATS.map((item, index) => { const fill = Math.max(0, Math.min(1, (elapsed - item.start) / (item.end - item.start))); return <button key={item.label + index} style={{ width: `${((item.end - item.start) / DURATION) * 100}%` }} className={`timeline-segment ${index === beatIndex ? 'current' : ''}`} onClick={() => jump(item.start + .1)} aria-label={`Jump to ${item.label}`}><span style={{ transform: `scaleX(${fill})` }} /><small>{item.label}</small></button>; })}</nav><div className="runtime"><Clock3 /> NEXT · {Math.max(0, Math.ceil(beat.end - elapsed))}s</div></footer>}
+      {started && act !== 'outro' && <footer className="playback-bar"><Button variant="ghost" size="icon" aria-label={playing ? 'Pause demo' : 'Play demo'} onClick={() => setPlaying(!playing)}>{playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}</Button><button className="timecode" onClick={() => jump(0)}>{formatTime(elapsed)} <span>/ 2:00</span></button><nav className="timeline" aria-label="Demo beats">{BEATS.map((item, index) => { const fill = Math.max(0, Math.min(1, (elapsed - item.start) / (item.end - item.start))); return <button key={item.label + index} style={{ width: `${((item.end - item.start) / DURATION) * 100}%` }} className={`timeline-segment ${index === beatIndex ? 'current' : ''}`} onClick={() => jump(item.start + .1)} aria-label={`Jump to ${item.label}`}><span style={{ transform: `scaleX(${fill})` }} /><small>{item.label}</small></button>; })}</nav><div className="runtime"><Clock3 /> NEXT · {Math.max(0, Math.ceil(beat.end - elapsed))}s</div></footer>}
     </main>
   );
 }
