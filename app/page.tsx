@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import {
   BookOpen,
   Box,
@@ -190,7 +191,7 @@ function ExploreScene({ mode, entity, onEntity }: { mode: 'explore-intro' | 'exp
         {intro && <div className="noun-cloud"><span>DAVID</span><span>JERUSALEM</span><span>SLING</span><span>PAUL</span><span>THE ARK</span><span>VALLEY OF ELAH</span></div>}
       </div>
       {noah && <KnowledgeCard entity={entity} />}
-      {mode === 'explore-material' && <aside className="simple-word-popover"><div className="simple-word-images"><img src="/noahs-ark-mountain.png" alt="AI view of Noah's Ark on a mountain" /><img src="/ark-timber-detail.png" alt="AI close view of timber and pitch on the ark" /></div><span>MATERIAL</span><h3>Pitch</h3><p>A thick, sticky seal. It filled the gaps in the wood and helped keep water out.</p><small>AI VIEW · BASED ON GENESIS 6:14</small></aside>}
+      {mode === 'explore-material' && <aside className="simple-word-popover"><div className="simple-word-images"><Image src="/noahs-ark-mountain.png" width={768} height={512} alt="AI view of Noah's Ark on a mountain" /><Image src="/ark-timber-detail.png" width={768} height={512} alt="AI close view of timber and pitch on the ark" /></div><span>MATERIAL</span><h3>Pitch</h3><p>A thick, sticky seal. It filled the gaps in the wood and helped keep water out.</p><small>AI VIEW · BASED ON GENESIS 6:14</small></aside>}
       {intro && <div className="tap-orbit"><Eye /><span>PERSON</span><span>PLACE</span><span>OBJECT</span><span>EVENT</span></div>}
     </section>
   );
@@ -213,6 +214,8 @@ export default function Home() {
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
   const [entity, setEntity] = useState<EntityKey>('ark');
+  const jump = (time: number) => { setStarted(true); setElapsed(time); setPlaying(true); };
+  const restart = () => { setStarted(false); setPlaying(false); setElapsed(0); };
 
   useEffect(() => {
     if (!playing) return;
@@ -239,8 +242,6 @@ export default function Home() {
     return () => window.clearTimeout(id);
   }, [act, playing]);
 
-  const jump = (time: number) => { setStarted(true); setElapsed(time); setPlaying(true); };
-  const restart = () => { setStarted(false); setPlaying(false); setElapsed(0); };
   const hookMode = act === 'hook-reach' ? 'reach' : act === 'hook-gap' ? 'gap' : null;
   const productMode = act === 'product-select' ? 'select' : act === 'product-pipeline' ? 'pipeline' : act === 'product-output' ? 'output' : null;
   const filmMode = act === 'film-context';

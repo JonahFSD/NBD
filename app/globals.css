@@ -451,6 +451,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   .select-product-state { grid-template-columns: 1fr; }.select-books { display: none; }.select-reader { padding: 18px 18px 82px; }.select-reader p { font-size: 10px; }.selection-toolbar { left: 10px; right: 10px; }.selection-toolbar > span { display: none; }
   .pipeline-product-state { padding: 20px 13px 15px; }.pipeline-flow { grid-template-columns: 1fr; grid-template-rows: auto 18px auto 18px auto 18px auto; overflow: hidden; margin-top: 10px; }.pipeline-link { width: 1px; height: 18px; justify-self: center; }.pipeline-link::after { left: -2px; animation: data-pulse-vertical 1.8s linear infinite; }.pipeline-core { justify-self: center; }.pipeline-branches { width: 100%; grid-template-columns: repeat(3, 1fr); }.pipeline-branches > div { min-width: 0; }.pipeline-branches svg { display: none; }.pipeline-branches strong { font-size: 9px; }.pipeline-log { grid-template-columns: auto 1fr auto; }.pipeline-log > div { display: none; }
   .output-title { bottom: 83px; }.output-title strong { font-size: 35px; }.output-play { left: auto; right: 24px; top: 38%; }.output-caption { width: 90%; overflow: hidden; text-align: center; text-overflow: ellipsis; }.output-actions { overflow-x: auto; }.output-actions button { flex: 0 0 auto; }
+  .battle-caption { bottom: 58px; font-size: 18px; }.falling-goliath { width: 53%; right: -8%; }.flying-stone { animation-name: stone-flight-mobile; }
   .scene::before { display: none; }
   .beat-count { display: block; margin-left: auto; }
   .kinetic-promise { font-size: 53px; }
@@ -464,7 +465,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--ember); outline
   .story-hotspots span { font-size: 7px; }.story-hotspots span:nth-child(3) { display: none; }
   .after-film { left: 20px; right: 20px; overflow-x: auto; }.after-film button { white-space: nowrap; }
   .explore-intro { display: block; }.tap-orbit { display: none; }.noun-cloud { height: 70px; overflow: hidden; }
+  .simple-word-popover { margin-top: 20px; }.simple-word-images { height: 135px; }.word-demo-passage > .word-demo-cursor { right: 24px; }.word-demo-passage > .word-demo-click { right: 17px; }
   .evidence-scene { display: block; overflow: auto; padding: 100px 20px 105px; }.evidence-copy h2 { font-size: 47px; }.evidence-stack { margin-top: 30px; }.evidence-layer.history, .evidence-layer.scholar, .evidence-layer.art { margin-left: 0; }
   .runtime { display: none; }
 }
 @keyframes data-pulse-vertical { from { top: 0; } to { top: calc(100% - 5px); } }
+@keyframes stone-flight-mobile { 0%, 36% { opacity: 0; transform: translate(0, 0) scale(.5); } 42% { opacity: 1; } 59% { opacity: 1; transform: translate(165px, -95px) scale(1); } 61%, 100% { opacity: 0; transform: translate(175px, -100px) scale(.4); } }
