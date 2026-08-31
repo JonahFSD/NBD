@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  AudioLines,
   BookOpen,
   Box,
   Check,
@@ -26,30 +25,23 @@ import { Button } from '@/components/ui/button';
 
 const DURATION = 148;
 const BEATS = [
-  { start: 0, end: 8, scene: 'intro', label: 'The View' },
-  { start: 8, end: 16, scene: 'promise', label: 'The promise' },
-  { start: 16, end: 25, scene: 'passages', label: 'Any passage' },
-  { start: 25, end: 34, scene: 'reader', label: 'Read' },
-  { start: 34, end: 43, scene: 'trigger', label: 'Create' },
-  { start: 43, end: 50, scene: 'creating-scripture', label: 'Map Scripture' },
-  { start: 50, end: 57, scene: 'creating-world', label: 'Build the world' },
-  { start: 57, end: 65, scene: 'film-title', label: 'The story' },
-  { start: 65, end: 74, scene: 'film-threat', label: 'The challenge' },
-  { start: 74, end: 84, scene: 'film-david', label: 'The shepherd' },
-  { start: 84, end: 94, scene: 'film-faith', label: 'Faith' },
-  { start: 94, end: 104, scene: 'film-context', label: 'More than film' },
-  { start: 104, end: 113, scene: 'explore-intro', label: 'Tap the world' },
-  { start: 113, end: 123, scene: 'explore-tabernacle', label: 'Tabernacle' },
-  { start: 123, end: 132, scene: 'explore-material', label: 'Every detail' },
-  { start: 132, end: 140, scene: 'evidence', label: 'Trust the lens' },
-  { start: 140, end: 148, scene: 'outro', label: 'The View' },
+  { start: 0, end: 9, scene: 'hook-reach', label: 'The reach' },
+  { start: 9, end: 17, scene: 'hook-gap', label: 'The gap' },
+  { start: 17, end: 24, scene: 'intro', label: 'The View' },
+  { start: 24, end: 34, scene: 'product-select', label: 'Select verses' },
+  { start: 34, end: 44, scene: 'product-pipeline', label: 'Build the story' },
+  { start: 44, end: 54, scene: 'product-output', label: 'Watch the View' },
+  { start: 54, end: 62, scene: 'film-title', label: 'The story' },
+  { start: 62, end: 71, scene: 'film-threat', label: 'The challenge' },
+  { start: 71, end: 81, scene: 'film-david', label: 'The shepherd' },
+  { start: 81, end: 91, scene: 'film-faith', label: 'Faith' },
+  { start: 91, end: 101, scene: 'film-context', label: 'More than film' },
+  { start: 101, end: 110, scene: 'explore-intro', label: 'Tap the world' },
+  { start: 110, end: 120, scene: 'explore-tabernacle', label: 'Tabernacle' },
+  { start: 120, end: 130, scene: 'explore-material', label: 'Every detail' },
+  { start: 130, end: 139, scene: 'evidence', label: 'Trust the lens' },
+  { start: 139, end: 148, scene: 'outro', label: 'The View' },
 ] as const;
-
-const chapters = [
-  { label: 'The beginning', ref: 'Genesis 1', time: '72 sec', tone: 'creation' },
-  { label: 'The shepherd king', ref: '1 Samuel 17', time: '84 sec', tone: 'david' },
-  { label: 'Peace, be still', ref: 'Mark 4:35–41', time: '68 sec', tone: 'sea' },
-];
 
 const entities = {
   tabernacle: {
@@ -87,62 +79,75 @@ function MotionField() {
   return <div className="motion-field" aria-hidden="true">{Array.from({ length: 9 }, (_, index) => <span key={index} />)}</div>;
 }
 
-function PassageScene({ mode, selected, onSelect, onCreate }: { mode: 'passages' | 'reader' | 'trigger'; selected: number; onSelect: (index: number) => void; onCreate: () => void }) {
-  const copy = {
-    passages: ['01 · ANY PASSAGE', 'Choose the story.', 'We’ll build the world.', 'From Genesis to Revelation, every passage is one tap away from a cinematic experience.'],
-    reader: ['02 · THE BIBLE, CENTER STAGE', 'Read it clearly.', 'See what matters.', 'People, places, objects, and ideas become doorways into the world behind the words.'],
-    trigger: ['03 · FROM TEXT TO CINEMA', 'One passage.', 'A world in motion.', 'Scripture is mapped first. Historical context shapes the scene. AI brings the experience to life.'],
-  }[mode];
-
+function HookScene({ mode, onStart }: { mode: 'reach' | 'gap'; onStart: () => void }) {
+  const reach = mode === 'reach';
   return (
-    <section className={`passage-scene scene passage-${mode}`}>
-      <div className="passage-heading">
-        <p className="section-kicker">{copy[0]}</p>
-        <h2>{copy[1]}<br /><em>{copy[2]}</em></h2>
-        <p>{copy[3]}</p>
-        {mode === 'passages' && <div className="micro-stats"><span><strong>66</strong> books</span><span><strong>1</strong> living experience</span><span><strong>60–90s</strong> films</span></div>}
-        {mode === 'reader' && <div className="reader-tools"><span><Search /> Search</span><span><BookOpen /> Translation</span><span><AudioLines /> Listen</span></div>}
-        {mode === 'trigger' && <div className="story-recipe"><span><Check /> Scripture mapped</span><span><MapPin /> Period located</span><span><Film /> Storyboard ready</span></div>}
-      </div>
-
-      <div className="bible-surface">
-        <div className="surface-scan" />
-        <div className="bible-topbar"><BookOpen size={17} /><span>HOLY BIBLE</span><button><Search size={16} /> Search passage</button></div>
-        <div className="bible-grid">
-          <aside><p>OLD TESTAMENT</p>{['Genesis', 'Exodus', 'Joshua', '1 Samuel', 'Psalms'].map((book) => <button className={book === '1 Samuel' ? 'active' : ''} key={book}>{book}<span>{book === '1 Samuel' ? '31' : '—'}</span></button>)}</aside>
-          <article>
-            <div className="chapter-label"><span>1 SAMUEL</span><strong>17</strong></div>
-            <h3>David and Goliath</h3>
-            <p className="scripture-line"><small>40</small> Then he took his staff in his hand, chose <button className={mode !== 'passages' ? 'word-active' : ''}>five smooth stones</button> from the stream and, with his <button className={mode === 'reader' ? 'word-active' : ''}>sling</button> in his hand, approached the <button className={mode === 'reader' ? 'word-active' : ''}>Philistine</button>.</p>
-            <p className="scripture-line muted-line"><small>45</small> David said to the Philistine, “You come against me with sword and spear and javelin, but I come against you in the name of the LORD Almighty...”</p>
-            <Button className={`create-film ${mode === 'trigger' ? 'cta-pulse' : ''}`} onClick={onCreate}><WandSparkles /> Create mini film <span>~84 sec</span></Button>
-          </article>
-        </div>
-        {mode === 'reader' && <div className="word-flyout"><span>OBJECT · WEAPON</span><strong>Sling</strong><small>Tap to see how it worked</small></div>}
-        {mode === 'trigger' && <div className="film-ready"><Sparkles /><span><small>READY TO CREATE</small><strong>David &amp; Goliath</strong></span></div>}
-      </div>
-
-      {mode === 'passages' && <div className="chapter-rail">{chapters.map((item, index) => <button key={item.ref} className={selected === index ? 'chapter-card selected' : 'chapter-card'} onClick={() => onSelect(index)}><span className={`chapter-thumb ${item.tone}`} /><span><small>{item.ref}</small><strong>{item.label}</strong></span><span className="card-time">{item.time}</span></button>)}</div>}
+    <section className={`hook-scene scene hook-${mode}`}>
+      <div className="hook-grid" /><div className="hook-glow" />
+      <header className="intro-nav"><div className="wordmark"><ViewMark /><span>THE VIEW</span></div><span className="demo-label">THE OPPORTUNITY</span></header>
+      {reach ? <>
+        <p className="section-kicker">THE WORLD’S BEST-SELLING BOOK</p>
+        <div className="hook-number"><span>80</span><small>MILLION</small></div>
+        <h1>Bibles printed<br /><em>every year.</em></h1>
+        <p className="hook-support"><strong>5–7 billion</strong> copies in circulation—and unmatched cultural influence.</p>
+        <Button className="enter-button hook-start" onClick={onStart}><span><Play size={15} fill="currentColor" /></span>Start the pitch</Button>
+        <a className="hook-source" href="https://www.guinnessworldrecords.com/world-records/best-selling-book-of-non-fiction" target="_blank" rel="noreferrer">SOURCE · GUINNESS WORLD RECORDS · 2021 ESTIMATE</a>
+      </> : <>
+        <p className="section-kicker">BUT REACH ISN’T ENGAGEMENT</p>
+        <div className="gap-stat"><span>51%</span><small>OF U.S. ADULTS</small></div>
+        <h1>wish they read<br />the Bible <em>more.</em></h1>
+        <p className="hook-thesis">The Bible doesn’t have an awareness problem.<br /><strong>It has an attention problem.</strong></p>
+        <div className="gap-line"><span>OWNED</span><i /><span>OPENED</span><i /><span>UNDERSTOOD</span></div>
+        <a className="hook-source" href="https://www.americanbible.org/news/press-releases/articles/sotb-2025-release/" target="_blank" rel="noreferrer">SOURCE · AMERICAN BIBLE SOCIETY · STATE OF THE BIBLE 2025</a>
+      </>}
     </section>
   );
 }
 
-function ForgeScene({ mode }: { mode: 'creating-scripture' | 'creating-world' }) {
-  const world = mode === 'creating-world';
+function ProductDemoScene({ mode }: { mode: 'select' | 'pipeline' | 'output' }) {
+  const copy = {
+    select: ['01 · CHOOSE THE MOMENT', 'Start with the Word.', 'Select the passage you want to see.'],
+    pipeline: ['02 · THE VIEW ENGINE', 'Scripture in.', 'A historically grounded story takes shape.'],
+    output: ['03 · YOUR VIEW IS READY', 'From passage', 'to cinematic experience.'],
+  }[mode];
+
   return (
-    <section className={`forge-scene scene ${world ? 'forge-world' : 'forge-scripture'}`}>
-      {world && <div className="forge-world-image" />}
-      <div className="forge-rings"><span /><span /><span /></div>
-      <div className="forge-sweep" />
-      <ViewMark hero />
-      <p className="section-kicker">{world ? 'STEP 02 · REBUILD THE WORLD' : 'STEP 01 · STAY TRUE TO THE TEXT'}</p>
-      <h2>{world ? <>Iron Age Levant.<br /><em>Grounded in context.</em></> : <>Scripture first.<br /><em>Every time.</em></>}</h2>
-      <div className="forge-status">
-        <span className="done"><BookOpen /> {world ? '1 Samuel 17' : 'Characters identified'}</span>
-        <span className="done"><MapPin /> {world ? 'Valley of Elah' : 'Actions sequenced'}</span>
-        <span className={world ? 'done' : ''}><Sparkles /> {world ? 'Material culture' : 'Verses connected'}</span>
+    <section className={`product-demo-scene scene product-${mode}`}>
+      <div className="product-demo-copy"><p className="section-kicker">{copy[0]}</p><h2>{copy[1]}<br /><em>{copy[2]}</em></h2>
+        {mode === 'select' && <p>Open any passage. Highlight the verses. Tap <strong>Create a View.</strong></p>}
+        {mode === 'pipeline' && <p>The text is mapped, the period is grounded, and each moment becomes a cinematic shot.</p>}
+        {mode === 'output' && <p>In 60–90 seconds, the passage becomes a film designed to send you back to Scripture.</p>}
+        <div className="walkthrough-steps"><span className={mode === 'select' ? 'active' : 'done'}>1</span><i /><span className={mode === 'pipeline' ? 'active' : mode === 'output' ? 'done' : ''}>2</span><i /><span className={mode === 'output' ? 'active' : ''}>3</span></div>
       </div>
-      {world ? <div className="orbit-labels"><span>BRONZE SCALE ARMOR</span><span>WOOL GARMENTS</span><span>LIMESTONE VALLEY</span></div> : <p className="scholar-note">The Bible remains the source. The View becomes the lens.</p>}
+
+      <div className={`product-window product-window-${mode}`}>
+        <div className="product-window-bar"><div className="mini-brand"><ViewMark /><span>THE VIEW</span></div><div className="window-context">{mode === 'select' ? 'BIBLE' : mode === 'pipeline' ? 'VIEW ENGINE' : 'CINEMA'}</div><div className="window-avatar">JE</div></div>
+
+        {mode === 'select' && <div className="select-product-state">
+          <aside className="select-books"><small>OLD TESTAMENT</small>{['Genesis', 'Exodus', 'Joshua', '1 Samuel', 'Psalms'].map(book => <span className={book === '1 Samuel' ? 'active' : ''} key={book}>{book}</span>)}</aside>
+          <article className="select-reader"><div className="select-reader-head"><span>1 SAMUEL</span><strong>17</strong><button><Search /> Find</button></div><h3>David and Goliath</h3>
+            <p><sup>38</sup> Then Saul dressed David in his own tunic. He put a coat of armor on him and a bronze helmet on his head.</p>
+            <div className="verse-selection"><span className="selection-handle top" /><p><sup>40</sup> Then he took his staff in his hand, chose five smooth stones from the stream, put them in the pouch of his shepherd’s bag and, with his sling in his hand, approached the Philistine.</p><p><sup>45</sup> David said to the Philistine, “You come against me with sword and spear and javelin, but I come against you in the name of the LORD Almighty...”</p><span className="selection-handle bottom" /></div>
+            <div className="selection-toolbar"><span><strong>Verses 40–45</strong> · 6 verses selected</span><button><WandSparkles /> Create a View</button></div>
+          </article><div className="demo-cursor"><span /></div>
+        </div>}
+
+        {mode === 'pipeline' && <div className="pipeline-product-state">
+          <div className="pipeline-head"><span><Sparkles /> CREATING YOUR VIEW</span><strong>1 Samuel 17:40–45</strong><small>Processing biblical text into a 1:24 cinematic story</small></div>
+          <div className="pipeline-flow">
+            <div className="pipeline-node input"><BookOpen /><span><small>SOURCE</small><strong>6 verses</strong><em>Scripture locked</em></span></div><i className="pipeline-link one" />
+            <div className="pipeline-core"><ViewMark /><span className="core-orbit" /></div><i className="pipeline-link two" />
+            <div className="pipeline-branches"><div><Check /><span><small>TEXT MAP</small><strong>8 story beats</strong></span></div><div><MapPin /><span><small>HISTORICAL LENS</small><strong>Iron Age Levant</strong></span></div><div><Box /><span><small>ENTITY MODEL</small><strong>David · Goliath · sling</strong></span></div></div><i className="pipeline-link three" />
+            <div className="pipeline-node output"><Film /><span><small>STORYBOARD</small><strong>24 shots</strong><em>Rendering now</em></span></div>
+          </div>
+          <div className="pipeline-log"><span>SCENE 18/24</span><p>Matching Valley of Elah terrain...</p><div><i /><i /><i /><i /><i /></div><strong>72%</strong></div>
+        </div>}
+
+        {mode === 'output' && <div className="output-product-state">
+          <div className="output-film"><div className="output-film-image" /><div className="output-film-shade" /><span className="ready-badge"><Check /> VIEW READY · 1:24</span><div className="output-title"><small>1 SAMUEL 17</small><strong>DAVID &amp; GOLIATH</strong><span>Artistic reconstruction based on biblical and historical context</span></div><button className="output-play"><Play fill="currentColor" /></button><div className="output-caption">“...with his sling in his hand, he approached the Philistine.”</div><div className="output-controls"><button><Pause fill="currentColor" /></button><span className="output-progress"><i /></span><small>0:18 / 1:24</small></div></div>
+          <div className="output-actions"><button><BookOpen /> Read the passage</button><button><Eye /> Explore David</button><button><MapPin /> Valley of Elah</button></div>
+        </div>}
+      </div>
     </section>
   );
 }
@@ -219,7 +224,6 @@ export default function Home() {
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
-  const [passage, setPassage] = useState(1);
   const [entity, setEntity] = useState<EntityKey>('tabernacle');
 
   useEffect(() => {
@@ -236,14 +240,15 @@ export default function Home() {
   const act = beat.scene;
 
   useEffect(() => {
-    if (act === 'explore-tabernacle') setEntity('tabernacle');
-    if (act === 'explore-material') setEntity('acacia');
+    if (act !== 'explore-tabernacle' && act !== 'explore-material') return;
+    const id = window.setTimeout(() => setEntity(act === 'explore-tabernacle' ? 'tabernacle' : 'acacia'), 0);
+    return () => window.clearTimeout(id);
   }, [act]);
 
   const jump = (time: number) => { setStarted(true); setElapsed(time); setPlaying(true); };
   const restart = () => { setStarted(false); setPlaying(false); setElapsed(0); };
-  const passageMode = act === 'passages' || act === 'reader' || act === 'trigger' ? act : null;
-  const forgeMode = act === 'creating-scripture' || act === 'creating-world' ? act : null;
+  const hookMode = act === 'hook-reach' ? 'reach' : act === 'hook-gap' ? 'gap' : null;
+  const productMode = act === 'product-select' ? 'select' : act === 'product-pipeline' ? 'pipeline' : act === 'product-output' ? 'output' : null;
   const filmMode = act.startsWith('film-') ? act as Parameters<typeof FilmScene>[0]['mode'] : null;
   const exploreMode = act.startsWith('explore-') ? act as Parameters<typeof ExploreScene>[0]['mode'] : null;
 
@@ -251,20 +256,19 @@ export default function Home() {
     <main className={`demo-shell act-${act}`}>
       <div className="grain" />{started && <MotionField />}
 
+      {hookMode && <HookScene key={beatIndex} mode={hookMode} onStart={() => { setStarted(true); setPlaying(true); }} />}
+
       {act === 'intro' && <section key={beatIndex} className="intro-scene scene"><div className="intro-image" /><div className="intro-vignette" /><header className="intro-nav"><button className="wordmark" onClick={restart}><ViewMark /><span>THE VIEW</span></button><span className="demo-label">INTERACTIVE PRODUCT FILM · 02:28</span></header><div className="intro-content"><p className="eyebrow"><span /> SCRIPTURE, SEEN ANEW <span /></p><div className="hero-mark"><ViewMark hero /></div><h1>THE VIEW</h1><p className="tagline">Don’t just read the story. <em>Enter it.</em></p><Button className="enter-button" onClick={() => { setStarted(true); setPlaying(true); }}><span><Play size={15} fill="currentColor" /></span>{started ? 'Continue the experience' : 'Begin the experience'}</Button></div><div className="intro-footer"><span>Historically grounded</span><span className="footer-rule" /><span>AI animated</span><span className="footer-rule" /><span>Every passage, alive</span></div></section>}
 
-      {act === 'promise' && <section key={beatIndex} className="promise-scene scene"><div className="promise-image" /><div className="promise-shade" /><p className="section-kicker">THE VIEW · THE BIG IDEA</p><div className="kinetic-promise"><span>READ IT.</span><span>SEE IT.</span><span>UNDERSTAND IT.</span></div><p>The Bible remains the source. <strong>The View is the lens.</strong></p><div className="promise-symbols"><span><BookOpen /> Scripture</span><i /><span><Film /> Cinema</span><i /><span><Eye /> Understanding</span></div></section>}
-
-      {passageMode && <PassageScene key={beatIndex} mode={passageMode} selected={passage} onSelect={setPassage} onCreate={() => jump(43.1)} />}
-      {forgeMode && <ForgeScene key={beatIndex} mode={forgeMode} />}
+      {productMode && <ProductDemoScene key={beatIndex} mode={productMode} />}
       {filmMode && <FilmScene key={beatIndex} mode={filmMode} />}
       {exploreMode && <ExploreScene key={beatIndex} mode={exploreMode} entity={entity} onEntity={setEntity} />}
       {act === 'evidence' && <EvidenceScene key={beatIndex} />}
       {act === 'outro' && <section key={beatIndex} className="outro-scene scene"><div className="outro-glow" /><ViewMark hero /><p className="section-kicker">THE VIEW</p><h2>Read it.<br /><em>See it.</em><br />Understand it.</h2><p>Any passage. Every detail. Scripture brought to life.</p><Button className="enter-button" onClick={restart}><RotateCcw /><span className="no-circle">Watch again</span></Button></section>}
 
-      {act !== 'intro' && act !== 'outro' && <header className="app-header"><button className="wordmark compact" onClick={restart}><ViewMark /><span>THE VIEW</span></button><div className="act-indicator"><span className="live-dot" /> {beat.label.toUpperCase()}</div><div className="beat-count"><span>{String(beatIndex + 1).padStart(2, '0')}</span> / {BEATS.length}</div><Button variant="ghost" size="sm" className="sound-button"><Volume2 /> Sound on</Button></header>}
+      {act !== 'intro' && act !== 'outro' && !act.startsWith('hook-') && <header className="app-header"><button className="wordmark compact" onClick={restart}><ViewMark /><span>THE VIEW</span></button><div className="act-indicator"><span className="live-dot" /> {beat.label.toUpperCase()}</div><div className="beat-count"><span>{String(beatIndex + 1).padStart(2, '0')}</span> / {BEATS.length}</div><Button variant="ghost" size="sm" className="sound-button"><Volume2 /> Sound on</Button></header>}
 
-      {started && act !== 'outro' && <footer className="playback-bar"><Button variant="ghost" size="icon" aria-label={playing ? 'Pause demo' : 'Play demo'} onClick={() => setPlaying(!playing)}>{playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}</Button><button className="timecode" onClick={() => jump(0)}>{formatTime(elapsed)} <span>/ 2:28</span></button><div className="timeline" role="group" aria-label="Demo beats">{BEATS.map((item, index) => { const fill = Math.max(0, Math.min(1, (elapsed - item.start) / (item.end - item.start))); return <button key={item.label + index} style={{ width: `${((item.end - item.start) / DURATION) * 100}%` }} className={`timeline-segment ${index === beatIndex ? 'current' : ''}`} onClick={() => jump(item.start + .1)} aria-label={`Jump to ${item.label}`}><span style={{ transform: `scaleX(${fill})` }} /><small>{item.label}</small></button>; })}</div><div className="runtime"><Clock3 /> NEXT · {Math.max(0, Math.ceil(beat.end - elapsed))}s</div></footer>}
+      {started && act !== 'outro' && <footer className="playback-bar"><Button variant="ghost" size="icon" aria-label={playing ? 'Pause demo' : 'Play demo'} onClick={() => setPlaying(!playing)}>{playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}</Button><button className="timecode" onClick={() => jump(0)}>{formatTime(elapsed)} <span>/ 2:28</span></button><nav className="timeline" aria-label="Demo beats">{BEATS.map((item, index) => { const fill = Math.max(0, Math.min(1, (elapsed - item.start) / (item.end - item.start))); return <button key={item.label + index} style={{ width: `${((item.end - item.start) / DURATION) * 100}%` }} className={`timeline-segment ${index === beatIndex ? 'current' : ''}`} onClick={() => jump(item.start + .1)} aria-label={`Jump to ${item.label}`}><span style={{ transform: `scaleX(${fill})` }} /><small>{item.label}</small></button>; })}</nav><div className="runtime"><Clock3 /> NEXT · {Math.max(0, Math.ceil(beat.end - elapsed))}s</div></footer>}
     </main>
   );
 }
